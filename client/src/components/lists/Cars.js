@@ -5,6 +5,7 @@ import Car from '../listitems/Car';
 
 const Cars = ({ personId, people }) => {
   const { data } = useQuery(GET_CARS, {
+    fetchPolicy: 'cache-and-network',
   });
 
   const car = data.Cars.filter((car) => car.personId === personId);
