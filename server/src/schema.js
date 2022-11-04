@@ -95,7 +95,7 @@ const people = [
   ]
 
   const typeDefs = gql`
-  type Contact {
+  type Person {
     id: String!
     firstName: String
     lastName: String
@@ -144,9 +144,9 @@ const resolvers = {
         cars: () => cars,
         personCars: (parent, args, context, info) => {
             const personalCars = filter(cars, {personId: args.id});
-            // const person = find(people, {id: args.id});
+            const person = find(people, {id: args.id});
             return {
-                person: find(people, {id: args.id}),
+                person: person,
                 cars: personalCars
             }
         }
@@ -175,8 +175,9 @@ const resolvers = {
             if (!person) {
                 throw new Error(`Couldn't find person with id ${args.id}`)
             }
-            remove(people, person)
-            return person
+            remove(people, { id: args.id });
+            remove(cars, { personId: args.id });
+            return person;
         },
 
         addCar: (root, args) => {
@@ -192,7 +193,7 @@ const resolvers = {
             return newCar
         },
         updateCar: (root, args) => {
-            const car = find(cars, {id: args.id})
+            const car = find(cars, {id: args.id});
             if (!car) {
                 throw new Error(`Couldn't find car with id ${args.id}`)
             }

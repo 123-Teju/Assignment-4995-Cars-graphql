@@ -1,61 +1,65 @@
-import { gql } from '@apollo/client'
+import { gql } from '@apollo/client';
 
 export const GET_PERSON = gql`
   {
-    contacts {
+    people {
       id
       firstName
       lastName
     }
   }
-`
+`;
 
 export const ADD_PERSON = gql`
-  mutation AddContact($id: String!, $firstName: String!, $lastName: String!) {
-    addContact(id: $id, firstName: $firstName, lastName: $lastName) {
+  mutation AddPerson($id: String!, $firstName: String!, $lastName: String!) {
+    addPerson(id: $id, firstName: $firstName, lastName: $lastName) {
       id
       firstName
       lastName
     }
   }
-`
+`;
 
 export const UPDATE_PERSON = gql`
-  mutation UpdateContact($id: String!, $firstName: String!, $lastName: String!) {
-    updateContact(id: $id, firstName: $firstName, lastName: $lastName) {
+  mutation UpdatePerson(
+    $id: String!
+    $firstName: String!
+    $lastName: String!
+  ) {
+    updatePerson(id: $id, firstName: $firstName, lastName: $lastName) {
       id
       firstName
       lastName
     }
   }
-`
+`;
 
 export const REMOVE_PERSON = gql`
-  mutation RemoveContact($id: String!) {
-    removeContact(id: $id) {
+  mutation RemovePerson($id: String!) {
+    removePerson(id: $id) {
       id
       firstName
       lastName
     }
   }
-`
+`;
 
 export const GET_CARS = gql`
-{
+  {
     cars {
-        id
-        make
-        model
-        year
-        price
-        personId
+      id
+      make
+      model
+      year
+      price
+      personId
     }
-}
-`
+  }
+`;
 
 export const ADD_CAR = gql`
 {
-    mutation AddCar($id: String!, $make: String!, $model: String!, $year: Int!, $price: Int!, $personId: String!) {
+    mutation AddCar($id: String!, $make: String!, $model: String!, $year: Int!, $price: Float!, $personId: String!) {
         addCar(id: $id, make: $make, model: $model, year: $year, price: $price, personId: $personId) {
             id
             make
@@ -65,10 +69,10 @@ export const ADD_CAR = gql`
             personId
         }
 }
-`
+`;
 
 export const UPDATE_CAR = gql`{
-    mutation UpdateCar($id: String!, $make: String!, $model: String!, $year: Int!, $price: Int!, $personId: String!) {
+    mutation UpdateCar($id: String!, $make: String!, $model: String!, $year: Int!, $price: Float!, $personId: String!) {
         updateCar(id: $id, make: $make, model: $model, year: $year, price: $price, personId: $personId) {
             id
             make
@@ -79,7 +83,7 @@ export const UPDATE_CAR = gql`{
         }
 
 }
-`
+`;
 
 export const REMOVE_CAR = gql`{
     mutation RemoveCar($id: String!) {
@@ -92,7 +96,7 @@ export const REMOVE_CAR = gql`{
             personId
         }
 }
-`
+`;
 
 export const GET_PERSON_CARS = gql`
 {
@@ -113,4 +117,4 @@ export const GET_PERSON_CARS = gql`
             }
         }
 }
-`
+`;
