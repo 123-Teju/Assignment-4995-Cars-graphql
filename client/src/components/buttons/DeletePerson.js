@@ -1,14 +1,14 @@
 import { DeleteOutlined } from '@ant-design/icons'
 import { useMutation } from '@apollo/client'
-import { GET_PERSON, REMOVE_PERSON } from '../../queries'
+import {GET_PEOPLE, REMOVE_PERSON } from '../../queries'
 import filter from 'lodash'
 
 const DeletePerson = ({ id }) => {
     const [removePerson] = useMutation(REMOVE_PERSON, {
         update(cache, { data: { removePerson } }) {
-        const { contacts } = cache.readQuery({ query: GET_PERSON })
+        const { contacts } = cache.readQuery({ query:GET_PEOPLE })
         cache.writeQuery({
-            query: GET_PERSON,
+            query:GET_PEOPLE,
             data: { contacts: filter(contacts, (contact) => contact.id !== removePerson.id) },
         })
         },

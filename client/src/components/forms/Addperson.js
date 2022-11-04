@@ -3,7 +3,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import Title from '../layout/Title';
 import { v4 as uuidv4 } from 'uuid';
 import { Button, Form, InputNumber, Select } from 'antd';
-import { GET_PERSON, ADD_PERSON} from '../../queries';
+import { GET_PEOPLE, ADD_PERSON} from '../../queries';
 
 const AddPerson = () => {
     const [id] = useState();
@@ -16,15 +16,15 @@ const AddPerson = () => {
     }
     , []);
 
-    const { data } = useQuery(GET_PERSON);
+    const { data } = useQuery(GET_PEOPLE);
     const onFinish = (values) => {
         const { firstName, lastName } = values;
         addPerson({
             variables: { id, firstName, lastName },
             update: (proxy, { data: { addPerson } }) => {
-                const { data } = proxy.readQuery({ query: GET_PERSON });
+                const { data } = proxy.readQuery({ query: GET_PEOPLE });
                 proxy.writeQuery({
-                    query: GET_PERSON,
+                    query: GET_PEOPLE,
                     data: {
                         ...data,
                         person: [...data.person, addPerson],

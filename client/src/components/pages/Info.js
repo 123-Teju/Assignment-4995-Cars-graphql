@@ -6,24 +6,19 @@ import { useQuery } from '@apollo/client';
 import { Link, useParams } from 'react-router-dom';
 
 const Info = () => {
-
-
   const { personId } = useParams();
-    const { loading, error, data } = useQuery(GET_PERSON_CARS)
-      // {
-    //     variables: { id: personId },
-    //     fetchPolicy: 'cache-and-network',
-    // });
-    // if (loading) return 'Loading...';
-    // if (error) return `Error! ${error.message}`;
+  const { data } = useQuery(GET_PERSON_CARS, {
+    variables: { id: personId },
+    fetchPolicy: 'cache-and-network',
+  });
 
   return (
     <>
       <Card
         title={`${data.personCars.person.firstName} ${data.personCars.person.lastName}`}
-        extra={<Link to={'/'}>Go BAck Home</Link>}
+        extra={<Link to={'/'}>Go Back Home</Link>}
       >
-        <CarInfo cars={data.personCars} />
+        <CarInfo cars={data.personCars.cars} />
       </Card>
     </>
   );

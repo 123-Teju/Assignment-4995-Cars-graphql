@@ -16,14 +16,14 @@ const App = () => {
       <div className="App">
         <Title />
         <BrowserRouter>
-        <Router>
-          <Route path="/" element={<Home />} />
-          <Route path="/person/:personId" element={<Info />} />
-        </Router>
-      </BrowserRouter>
+          <Router>
+            <Route path="/" element={<Home />} />
+            <Route path="/person/:personId" element={<Info />} />
+          </Router>
+        </BrowserRouter>
       </div>
     </ApolloProvider>
-  )
+  );
 };
 
 export default App;

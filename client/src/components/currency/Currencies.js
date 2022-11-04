@@ -1,5 +1,5 @@
 export const currencies = (price) => {
-    return `${price}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+    return (`${price}`.replace(/\B(?=(\d{3})+(?!\d))/g, ","))
 };
     // this regex is taken from stack over flow. https://stackoverflow.com/questions/2254185/regular-expression-for-formatting-numbers-in-javascript
 

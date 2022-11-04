@@ -3,7 +3,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import Title from '../layout/Title';
 import { v4 as uuidv4 } from 'uuid';
 import { Button, Form, InputNumber, Select } from 'antd';
-import { GET_CARS, GET_PERSON, ADD_CAR } from '../../queries';
+import { GET_CARS, GET_PEOPLE, ADD_CAR } from '../../queries';
 
 const AddCar = () => {
   const [id, setId] = useState(uuidv4());
@@ -15,7 +15,7 @@ const AddCar = () => {
     forceUpdate({});
   }, []);
 
-  const { data } = useQuery(GET_PERSON);
+  const { data } = useQuery(GET_PEOPLE);
   const onFinish = (values) => {
     const { year, make, model, price, personId } = values;
     addCar({
