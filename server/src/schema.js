@@ -1,5 +1,5 @@
 import { gql } from 'apollo-server-express';
-import { find, remove } from 'lodash';
+import { find, remove, filter } from 'lodash';
 
 const people = [
   {
@@ -109,7 +109,7 @@ const typeDefs = gql`
     personId: String
   }
 
-  type PersonCar {
+  type PersonWithCars {
     person: Person
     cars: [Car]
   }
@@ -119,7 +119,7 @@ const typeDefs = gql`
     people: [Person]
     car(id: String!): Car
     cars: [Car]
-    personCars(id: String!): PersonCar
+    personWithCars(id: String!): PersonWithCars
   }
 
   type Mutation {
@@ -152,11 +152,13 @@ const resolvers = {
       return find(people, { id: args.id });
     },
     people: () => people,
+
     car: (parent, args, context, info) => {
       return find(cars, { id: args.id });
     },
     cars: () => cars,
-    personCars: (parent, args, context, info) => {
+
+    personWithCars: (parent, args, context, info) => {
       const personalCars = filter(cars, { personId: args.id });
       const person = find(people, { id: args.id });
       return {
@@ -167,18 +169,18 @@ const resolvers = {
   },
   Mutation: {
     addPerson: (root, args) => {
-      const newPerson = {
+      const person = {
         id: args.id,
         firstName: args.firstName,
         lastName: args.lastName,
       };
-      people.push(newPerson);
-      return newPerson;
+      people.push(person);
+      return person;
     },
     updatePerson: (root, args) => {
       const person = find(people, { id: args.id });
       if (!person) {
-        throw new Error(`Couldn't find person with id ${args.id}`);
+        throw new Error('Person not found for id: ' + args.id);
       }
       person.firstName = args.firstName;
       person.lastName = args.lastName;
@@ -187,7 +189,7 @@ const resolvers = {
     deletePerson: (root, args) => {
       const person = find(people, { id: args.id });
       if (!person) {
-        throw new Error(`Couldn't find person with id ${args.id}`);
+        throw new Error('Could not find person with id' + args.id);
       }
       remove(people, { id: args.id });
       remove(cars, { personId: args.id });
@@ -209,7 +211,7 @@ const resolvers = {
     updateCar: (root, args) => {
       const car = find(cars, { id: args.id });
       if (!car) {
-        throw new Error(`Couldn't find car with id ${args.id}`);
+        throw new Error('Could not find car with id' + args.id);
       }
       car.year = args.year;
       car.make = args.make;
@@ -223,7 +225,7 @@ const resolvers = {
       if (!car) {
         throw new Error('Can not find car with id:' + args.id);
       }
-      remove(cars, car);
+      remove(cars, { id: args.id });
       return car;
     },
   },

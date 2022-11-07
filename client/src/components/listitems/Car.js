@@ -5,7 +5,7 @@ import UpdateCar from '../forms/UpdateCar';
 import { Card } from 'antd';
 import { useState } from 'react';
 
-const Car = ({ car, updateCarDetail }) => {
+const Car = ({ car, people }) => {
   const [id, setId] = useState(car.id);
   const [year, setYear] = useState(car.year);
   const [make, setMake] = useState(car.make);
@@ -36,14 +36,14 @@ const Car = ({ car, updateCarDetail }) => {
     }
   };
 
-  return editMode ? (
+  return ( editMode ? 
     <UpdateCar
       car={car}
-      updateCarDetail={updateCarDetail}
       setEditMode={setEditMode}
-      onReset={onReset}
+      updateCarDetail={onReset}
+      people={people}
     />
-  ) : (
+   : 
     <Card
       title={`${car.year} ${car.make} ${car.model} -> ${currencies(car.price)}`}
       key={car.id}

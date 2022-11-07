@@ -12,11 +12,6 @@ const Person = ({ person, people }) => {
   const [lastName, setLastName] = useState(person.lastName);
   const [editMode, setEditMode] = useState(false);
 
-  useEffect(() => {
-    console.log(firstName);
-    console.log(lastName);
-  }, [firstName, lastName]);
-
   const onReset = (data, value) => {
     switch (data) {
       case 'firstName':
@@ -35,7 +30,7 @@ const Person = ({ person, people }) => {
       <UpdatePerson
         person={person}
         setEditMode={setEditMode}
-        onReset={onReset}
+        updateCarDetail={onReset}
       />
       <Cars personId={id} people={people} />
       <Link to={`/people/${id}`}>Learn More</Link>

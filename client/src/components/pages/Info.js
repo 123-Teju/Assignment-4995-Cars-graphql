@@ -1,13 +1,14 @@
 // import Title from '../layout/Title';
 import CarInfo from '../lists/CarInfo';
-import { GET_PERSON_CARS } from '../../queries';
+import { GET_PERSON_WITH_CARS } from '../../queries';
 import { Card } from 'antd';
 import { useQuery } from '@apollo/client';
 import { Link, useParams } from 'react-router-dom';
 
 const Info = () => {
   const { personId } = useParams();
-  const { data } = useQuery(GET_PERSON_CARS, {
+
+  const { data } = useQuery(GET_PERSON_WITH_CARS, {
     variables: { id: personId },
     fetchPolicy: 'cache-and-network',
   });
@@ -15,10 +16,10 @@ const Info = () => {
   return (
     <>
       <Card
-        title={`${data.personCars.person.firstName} ${data.personCars.person.lastName}`}
+        title={`${data.personWithCars.person.firstName} ${data.personWithCars.person.lastName}`}
         extra={<Link to={'/'}>Go Back Home</Link>}
       >
-        <CarInfo cars={data.personCars.cars} />
+        <CarInfo cars={data.personWithCars.cars} />
       </Card>
     </>
   );

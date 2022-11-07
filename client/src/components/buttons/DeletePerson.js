@@ -1,15 +1,15 @@
 import { DeleteOutlined } from '@ant-design/icons'
 import { useMutation } from '@apollo/client'
-import {GET_PEOPLE, REMOVE_PERSON } from '../../queries'
+import {GET_PEOPLE, DELETE_PERSON } from '../../queries'
 import filter from 'lodash'
 
 const DeletePerson = ({ id }) => {
-    const [removePerson] = useMutation(REMOVE_PERSON, {
-        update(cache, { data: { removePerson } }) {
+    const [deletePerson] = useMutation(DELETE_PERSON, {
+        update(cache, { data: { deletePerson } }) {
         const { contacts } = cache.readQuery({ query:GET_PEOPLE })
         cache.writeQuery({
             query:GET_PEOPLE,
-            data: { contacts: filter(contacts, (contact) => contact.id !== removePerson.id) },
+            data: { contacts: filter(contacts, (contact) => contact.id !== deletePerson.id) },
         })
         },
     })
@@ -17,7 +17,7 @@ const DeletePerson = ({ id }) => {
     const handleDeletePerson = () => {
         let result = window.confirm('Are you sure you want to delete this person details?')
         if (result) {
-            removePerson({ variables: { id } });
+            deletePerson({ variables: { id } });
         }
     };
     
