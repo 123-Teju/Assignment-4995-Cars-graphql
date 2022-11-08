@@ -41,7 +41,7 @@ const AddCar = () => {
   };
 
   return (
-    data.person.length > 0 && (
+    data?.person?.length > 0 && (
       <>
         <Form form={form} name="addCar-form" onFinish={onFinish}>
           <Form.Item

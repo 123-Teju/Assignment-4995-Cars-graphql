@@ -6,12 +6,12 @@ import Person from '../lists/Person';
 
 function Home() {
   return (
-    <>
+    <div className="App">
       <AddPerson />
       <AddCar />
       <Title />
       <Person />
-    </>
+    </div>
   );
 }
 
