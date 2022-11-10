@@ -1,13 +1,13 @@
-import InfoCar from '../listitems/InfoCar';
 import { List } from 'antd';
+import DetailPageCar from '../listitems/InfoCar';
 
-const CarInfo = ({ car }) => {
+const CarInfo = ({ cars }) => {
   return (
     <List
-      dataSource={car}
+      dataSource={cars}
       renderItem={(car) => (
         <List.Item key={car.id}>
-          <InfoCar car={car} />
+          <DetailPageCar car={car} />
         </List.Item>
       )}
     />

@@ -1,12 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useMutation } from '@apollo/client';
+import { Form, Input, Button, Divider } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
-import { Button, Form, InputNumber} from 'antd';
-import { GET_PEOPLE, ADD_PERSON } from '../../queries';
+import { CREATE_PERSON, GET_PEOPLE } from '../../queries';
+import Title from '../layout/Title';
+
+const getStyles = () => ({
+  formItem: { marginBottom: 10 },
+});
 
 const AddPerson = () => {
-  const [id] = useState(uuidv4);
-  const [addPerson] = useMutation(ADD_PERSON);
+  const styles = getStyles();
+  const [id] = useState(uuidv4());
+  const [createPerson] = useMutation(CREATE_PERSON);
   const [form] = Form.useForm();
   const [, forceUpdate] = useState();
 
@@ -16,15 +22,15 @@ const AddPerson = () => {
 
   const onFinish = (values) => {
     const { firstName, lastName } = values;
-    addPerson({
+    createPerson({
       variables: { id, firstName, lastName },
-      update: (proxy, { data: { addPerson } }) => {
-        const { data } = proxy.readQuery({ query: GET_PEOPLE });
+      update: (proxy, { data: { createPerson } }) => {
+        const data = proxy.readQuery({ query: GET_PEOPLE });
         proxy.writeQuery({
           query: GET_PEOPLE,
           data: {
             ...data,
-            person: [...data.person, addPerson],
+            people: [...data.people, createPerson],
           },
         });
       },
@@ -34,33 +40,51 @@ const AddPerson = () => {
 
   return (
     <>
-      <Form form={form} name="addPerson" onFinish={onFinish}>
+      <Divider>
+        <Title text={'Add Person'} />
+      </Divider>
+
+      <Form
+        form={form}
+        name="create-person-form"
+        layout="inline"
+        onFinish={onFinish}
+        size="large"
+        style={{ marginBottom: '40px' }}
+      >
         <Form.Item
+          style={styles.formItem}
           name="firstName"
           label="First Name"
-          rules={[{ required: true, message: 'Please input the first name!' }]}
+          rules={[{ required: true, message: 'Please input your first name!' }]}
         >
-          <InputNumber placeholder="First Name" />
+          <Input placeholder="First Name" />
         </Form.Item>
+
         <Form.Item
+          style={styles.formItem}
           name="lastName"
           label="Last Name"
-          rules={[{ required: true, message: 'Please input the last name!' }]}
+          rules={[{ required: true, message: 'Please input your last name!' }]}
         >
-          <InputNumber placeholder="Last Name" />
+          <Input placeholder="Last Name" />
         </Form.Item>
-        <Form.Item>
-          <Button
-            type="primary"
-            htmlType="submit"
-            disabled={
-              (!form.isFieldTouched('firstName') &&
-                !form.isFieldTouched('lastName')) ||
-              form.getFieldsError().filter(({ errors }) => errors.length).length
-            }
-          >
-            Add Person
-          </Button>
+
+        <Form.Item style={styles.formItem} shouldUpdate={true}>
+          {() => (
+            <Button
+              type="primary"
+              htmlType="submit"
+              disabled={
+                (!form.isFieldTouched('firstName') &&
+                  !form.isFieldTouched('lastName')) ||
+                form.getFieldsError().filter(({ errors }) => errors.length)
+                  .length
+              }
+            >
+              Add Person
+            </Button>
+          )}
         </Form.Item>
       </Form>
     </>

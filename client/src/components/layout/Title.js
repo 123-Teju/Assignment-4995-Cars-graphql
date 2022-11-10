@@ -1,19 +1,19 @@
+
 const getStyles = () => ({
-    title: {
-      fontSize: 20,
-      padding: '15px',
-      fontWeight: 'medium',
-      marginBottom: '50px',
-      textTransform: 'uppercase'
-    }
-  })
-  
-  const Title = ({ title }) => {
-    const styles = getStyles()
-  
-    return (
-      <h1 style={styles.title}>PEOPLE AND THEIR CARS</h1>
-    );
+  title: {
+      fontSize: '1.5em',
+      fontWeight: 'bold',
+      margin: '0 0 0.5em 0'
   }
-  
-  export default Title
+})
+
+
+const Title = ({ text }) => {
+  const styles = getStyles()
+  return (
+      <h1 style={styles.title}>{text}</h1>
+  );
+}
+
+
+export default Title;

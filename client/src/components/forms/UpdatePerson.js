@@ -1,13 +1,23 @@
-import { Button, Form, InputNumber } from 'antd';
-import { UPDATE_PERSON } from '../../queries';
 import { useEffect, useState } from 'react';
 import { useMutation } from '@apollo/client';
+import { Button, Form, Input } from 'antd';
+import { UPDATE_PERSON } from '../../queries';
 
-const UpdatePerson = ({ person, updatePersonDetail, setEditMode }) => {
+const getStyles = () => ({
+  form: {
+    padding: '10px',
+    backgroundColor: '#fafafa',
+  },
+  formItem: { marginBottom: 10 },
+});
+
+const UpdatePerson = ({ person, setEditMode, updateParentStateVariable }) => {
+  const styles = getStyles();
   const [id] = useState(person.id);
   const [firstName, setFirstName] = useState(person.firstName);
   const [lastName, setLastName] = useState(person.lastName);
   const [updatePerson] = useMutation(UPDATE_PERSON);
+
   const [form] = Form.useForm();
   const [, forceUpdate] = useState();
 
@@ -24,9 +34,9 @@ const UpdatePerson = ({ person, updatePersonDetail, setEditMode }) => {
     setEditMode(false);
   };
 
-  const onReset = (data, value) => {
-    updatePersonDetail(data, value);
-    switch (data) {
+  const updateStateVariable = (variable, value) => {
+    updateParentStateVariable(variable, value);
+    switch (variable) {
       case 'firstName':
         setFirstName(value);
         break;
@@ -41,57 +51,58 @@ const UpdatePerson = ({ person, updatePersonDetail, setEditMode }) => {
   return (
     <Form
       form={form}
-      name="updatePerson"
+      name="update-person-form"
+      layout="inline"
+      style={styles.form}
       onFinish={onFinish}
-      initialValues={{
-        firstName: firstName,
-        lastName: lastName,
-      }}
+      initialValues={{ firstName, lastName }}
     >
       <Form.Item
+        style={styles.formItem}
         name="firstName"
         label="First Name"
-        rules={[
-          {
-            required: true,
-            message: 'Please input your first name',
-          },
-        ]}
+        rules={[{ required: true, message: 'Please input your first name!' }]}
       >
-        <InputNumber
+        <Input
+          placeholder="First Name"
           value={firstName}
-          onChange={(event) => onReset('firstName', event.target.value)}
+          onChange={(event) =>
+            updateStateVariable('firstName', event.target.value)
+          }
         />
       </Form.Item>
 
       <Form.Item
+        style={styles.formItem}
         name="lastName"
         label="Last Name"
-        rules={[
-          {
-            required: true,
-            message: 'Please input your last name',
-          },
-        ]}
+        rules={[{ required: true, message: 'Please input your last name!' }]}
       >
-        <InputNumber
+        <Input
+          placeholder="Last Name"
           value={lastName}
-          onChange={(event) => onReset('lastName', event.target.value)}
+          onChange={(event) =>
+            updateStateVariable('lastName', event.target.value)
+          }
         />
       </Form.Item>
-      <Form.Item>
-        <Button
-          type="primary"
-          htmlType="submit"
-          disabled={
-            (!form.isFieldTouched('firstName') &&
-              !form.isFieldTouched('lastName')) ||
-            form.getFieldsError().filter(({ errors }) => errors.length).length
-          }
-        >
-          Update
-        </Button>
+
+      <Form.Item style={styles.formItem} shouldUpdate={true}>
+        {() => (
+          <Button
+            type="primary"
+            htmlType="submit"
+            disabled={
+              (!form.isFieldTouched('firstName') &&
+                !form.isFieldTouched('lastName')) ||
+              form.getFieldsError().filter(({ errors }) => errors.length).length
+            }
+          >
+            Update Person
+          </Button>
+        )}
       </Form.Item>
+
       <Button onClick={() => setEditMode(false)}>Cancel</Button>
     </Form>
   );

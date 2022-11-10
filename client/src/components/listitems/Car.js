@@ -1,21 +1,29 @@
-import { EditOutlined } from '@ant-design/icons';
-import DeleteCar from '../buttons/DeleteCar';
-import { currencies } from '../currency/Currencies';
-import UpdateCar from '../forms/UpdateCar';
 import { Card } from 'antd';
 import { useState } from 'react';
+import { EditOutlined } from '@ant-design/icons';
+import DeleteCar from '../buttons/DeleteCar';
+import { currencyFormatter } from '../currency/Currencies';
+import UpdateCar from '../forms/UpdateCar';
+
+const getStyles = () => ({
+  card: {
+    width: '100%',
+    minWidth: '500px',
+  },
+});
 
 const Car = ({ car, people }) => {
-  const [id, setId] = useState(car.id);
-  const [year, setYear] = useState(car.year);
-  const [make, setMake] = useState(car.make);
-  const [mode, setModel] = useState(car.model);
-  const [price, setPrice] = useState(car.price);
-  const [personId, setPersonId] = useState(car.personId);
+  const styles = getStyles();
+  const [id] = useState(car.id);
+  const [, setYear] = useState(car.year);
+  const [, setMake] = useState(car.make);
+  const [, setModel] = useState(car.model);
+  const [, setPrice] = useState(car.price);
+  const [, setPersonId] = useState(car.personId);
   const [editMode, setEditMode] = useState(false);
 
-  const onReset = (data, value) => {
-    switch (data) {
+  const updateStateVariable = (variable, value) => {
+    switch (variable) {
       case 'year':
         setYear(value);
         break;
@@ -36,22 +44,25 @@ const Car = ({ car, people }) => {
     }
   };
 
-  return ( editMode ? 
+  return editMode ? (
     <UpdateCar
       car={car}
       setEditMode={setEditMode}
-      updateCarDetail={onReset}
+      updateParentStateVariable={updateStateVariable}
       people={people}
     />
-   : 
+  ) : (
     <Card
-      title={`${car.year} ${car.make} ${car.model} -> ${currencies(car.price)}`}
       key={car.id}
+      style={styles.card}
       actions={[
         <EditOutlined key="edit" onClick={() => setEditMode(!editMode)} />,
         <DeleteCar id={id} />,
       ]}
       type="inner"
+      title={`${car.year} ${car.make} ${car.model} -> ${currencyFormatter(
+        car.price
+      )}`}
     />
   );
 };

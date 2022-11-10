@@ -1,15 +1,15 @@
-export const currencies = (price) => {
-  return `${price}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+export const currencyFormatter = (value) => {
+  return `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 };
-// this regex is taken from stack over flow. https://stackoverflow.com/questions/2254185/regular-expression-for-formatting-numbers-in-javascript
+// code from the Stack overflow.
 
-export const Currency = (price) => {
+export const currencyParser = (value) => {
   try {
-    if (typeof price === 'string' && !price.length) {
-      price = '0.0';
-      return price;
+    if (typeof value === 'string' && !value.length) {
+      value = '0.0';
+      return value;
     }
-    return price.replace(/\$\s?|(,*)/g, '');
+    return value.replace(/\$\s?|(,*)/g, '');
   } catch (error) {
     console.error(error);
   }

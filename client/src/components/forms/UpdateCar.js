@@ -1,17 +1,27 @@
 import { useEffect, useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { Button, Form, InputNumber, Select } from 'antd';
+import { Button, Form, Input, Select, InputNumber } from 'antd';
 import { UPDATE_CAR } from '../../queries';
-import { currencies, Currency } from '../currency/Currencies';
+import { currencyFormatter, currencyParser } from '../currency/Currencies';
 
-const UpdateCar = ({ car, updateCarDetail, setEditMode, people }) => {
-  const [id] = useState();
+const getStyles = () => ({
+  form: {
+    border: '1px solid #ccc',
+    padding: '10px',
+  },
+  formItem: { marginBottom: 10 },
+});
+
+const UpdateCar = ({ car, setEditMode, updateParentStateVariable, people }) => {
+  const styles = getStyles();
+  const [id] = useState(car.id);
   const [year, setYear] = useState(car.year);
   const [make, setMake] = useState(car.make);
   const [model, setModel] = useState(car.model);
   const [price, setPrice] = useState(car.price);
   const [personId, setPersonId] = useState(car.personId);
   const [updateCar] = useMutation(UPDATE_CAR);
+
   const [form] = Form.useForm();
   const [, forceUpdate] = useState();
   const { Option } = Select;
@@ -20,6 +30,7 @@ const UpdateCar = ({ car, updateCarDetail, setEditMode, people }) => {
     forceUpdate({});
   }, []);
 
+  // Submit the form.
   const onFinish = (values) => {
     const { year, make, model, price, personId } = values;
     updateCar({
@@ -29,9 +40,10 @@ const UpdateCar = ({ car, updateCarDetail, setEditMode, people }) => {
     setEditMode(false);
   };
 
-  const onReset = (data, value) => {
-    updateCarDetail(data, value);
-    switch (data) {
+  // Update variables
+  const updateStateVariable = (variable, value) => {
+    updateParentStateVariable(variable, value);
+    switch (variable) {
       case 'year':
         setYear(value);
         break;
@@ -53,78 +65,94 @@ const UpdateCar = ({ car, updateCarDetail, setEditMode, people }) => {
   };
 
   return (
-    <>
-      <Form
-        form={form}
-        name="updateCar"
-        onFinish={onFinish}
-        initialValues={{ year, make, model, price, personId }}
+    // Update car form
+    <Form
+      form={form}
+      name="update-person-form"
+      layout="inline"
+      style={styles.form}
+      onFinish={onFinish}
+      initialValues={{ year, make, model, price, personId }}
+    >
+      <Form.Item
+        style={styles.formItem}
+        name="year"
+        label="Year"
+        rules={[{ required: true, message: 'Please input your car year!' }]}
       >
-        <Form.Item
-          name="year"
-          label="Year"
-          rules={[{ required: true, message: 'Please input the year!' }]}
+        <InputNumber
+          placeholder="Year"
+          min={1950}
+          max={2022}
+          value={year}
+          onChange={(value) => updateStateVariable('year', value)}
+        />
+      </Form.Item>
+
+      <Form.Item
+        style={styles.formItem}
+        name="make"
+        label="Make"
+        rules={[{ required: true, message: 'Please input your car make!' }]}
+      >
+        <Input
+          placeholder="Make"
+          value={make}
+          onChange={(event) => updateStateVariable('make', event.target.value)}
+        />
+      </Form.Item>
+
+      <Form.Item
+        style={styles.formItem}
+        name="model"
+        label="Model"
+        rules={[{ required: true, message: 'Please input your car model!' }]}
+      >
+        <Input
+          placeholder="Model"
+          value={model}
+          onChange={(event) => updateStateVariable('model', event.target.value)}
+        />
+      </Form.Item>
+
+      <Form.Item
+        style={styles.formItem}
+        name="price"
+        label="Price"
+        rules={[{ required: true, message: 'Please input your car price!' }]}
+      >
+        <InputNumber
+          placeholder="Price"
+          min={0}
+          step={0.01}
+          formatter={currencyFormatter}
+          parser={currencyParser}
+          value={price}
+          onChange={(value) => updateStateVariable('price', value)}
+        />
+      </Form.Item>
+
+      <Form.Item
+        style={styles.formItem}
+        name="personId"
+        label="Person"
+        rules={[{ required: true, message: 'Please select a person!' }]}
+      >
+        <Select
+          placeholder="Select a person"
+          value={personId}
+          onChange={(value) => updateStateVariable('personId', value)}
         >
-          <InputNumber
-            placeholder="Year"
-            value={year}
-            onChange={(value) => onReset('year', value)}
-          />
-        </Form.Item>
-        <Form.Item
-          name="make"
-          label="Make"
-          rules={[{ required: true, message: 'Please input the make!' }]}
-        >
-          <InputNumber
-            placeholder="Make"
-            value={make}
-            onChange={(event) => onReset('make', event.target.value)}
-          />
-        </Form.Item>
-        <Form.Item
-          name="model"
-          label="Model"
-          rules={[{ required: true, message: 'Please input the model!' }]}
-        >
-          <InputNumber
-            placeholder="Model"
-            value={model}
-            onChange={(event) => onReset('model', event.target.value)}
-          />
-        </Form.Item>
-        <Form.Item
-          name="price"
-          label="Price"
-          rules={[{ required: true, message: 'Please input the price!' }]}
-        >
-          <InputNumber
-            placeholder="Price"
-            value={price}
-            formatter={currencies}
-            parser={Currency}
-            onChange={(value) => onReset('price', value)}
-          />
-        </Form.Item>
-        <Form.Item
-          name="personId"
-          label="Person"
-          rules={[{ required: true, message: 'Please input the person!' }]}
-        >
-          <Select
-            placeholder="Person"
-            value={personId}
-            onChange={(value) => onReset('personId', value)}
-          >
-            {people.map((person) => (
-              <Option key={person.id} value={person.id}>
-                {person.firstName}
-                {person.lastName}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
-        <Form.Item>
+          {people.map((person) => (
+            <Option key={person.id} value={person.id}>
+              {person.firstName} {person.lastName}
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+
+      <Form.Item style={styles.formItem} shouldUpdate={true}>
+        {() => (
           <Button
             type="primary"
             htmlType="submit"
@@ -134,15 +162,16 @@ const UpdateCar = ({ car, updateCarDetail, setEditMode, people }) => {
                 !form.isFieldTouched('model') &&
                 !form.isFieldTouched('price') &&
                 !form.isFieldTouched('personId')) ||
-              form.getFieldError().filter(({ errors }) => errors.length).length
+              form.getFieldsError().filter(({ errors }) => errors.length).length
             }
           >
             Update Car
           </Button>
-        </Form.Item>
-        <Button onClick={() => setEditMode(false)}>Cancel</Button>
-      </Form>
-    </>
+        )}
+      </Form.Item>
+
+      <Button onClick={() => setEditMode(false)}>Cancel</Button>
+    </Form>
   );
 };
 
